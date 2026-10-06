@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {DEFAULT,PARTS,WEATHER,simulate,createFlight,stepFlight,statsFor,randomBuild} from '../dist/game.js';
+test('starter reaches space and lands safely',()=>{const f=simulate(DEFAULT);assert.equal(f.status,'success');assert.ok(f.maxAltitude>=100000);assert.equal(f.altitude,0);assert.ok(f.chute);});
+test('reinforced Titan build is another successful solution',()=>{const f=simulate({...DEFAULT,nose:'needle',hull:'titanium',engine:'titan',fuel:'methalox'});assert.equal(f.status,'success');});
+test('mismatched propellant causes ignition failure',()=>{const f=simulate({...DEFAULT,fuel:'xenon'});assert.equal(f.status,'destroyed');assert.equal(f.cause.title,'Ignition failure');});
+test('ion engine cannot lift off Earth',()=>{const f=simulate({...DEFAULT,engine:'ion',fuel:'xenon'});assert.equal(f.cause.title,'Launch pad impact');});
+test('unstable fins lose control and weather changes the margin',()=>{const b={...DEFAULT,fins:'stub'};assert.ok(statsFor(b,WEATHER[2]).stability<statsFor(b,WEATHER[0]).stability);assert.equal(simulate(b).cause.title,'Lost aerodynamic control');});
+test('fragile hardware breaks up from heat',()=>{assert.equal(simulate({...DEFAULT,nose:'bubble',hull:'scrap'}).cause.title,'Thermal breakup');});
+test('reaching space without recovery hardware ends in impact',()=>{const f=simulate({...DEFAULT,recovery:'none'});assert.equal(f.reachedSpace,true);assert.equal(f.cause.title,'Destroyed on impact');});
+test('low fuel returns safely without achieving the objective',()=>{const f=simulate({...DEFAULT,load:35,hull:'titanium',nose:'needle'});assert.equal(f.status,'recovered');assert.ok(f.maxAltitude<100000);});
+test('abort cuts thrust, preserves fuel, and recovers',()=>{const f=createFlight(DEFAULT);for(let i=0;i<300;i++)stepFlight(f,.05);f.aborted=true;const fuel=f.fuel;for(let i=0;i<60000&&f.status==='flying';i++)stepFlight(f,.05);assert.equal(f.fuel,fuel);assert.equal(f.status,'recovered');});
+test('all generated designs have valid parts and simulations terminate',()=>{let seed=23;const rng=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);for(let i=0;i<80;i++){const b=randomBuild(rng);for(const k of Object.keys(PARTS))assert.ok(PARTS[k].some(p=>p.id===b[k]));const f=simulate(b,WEATHER[i%3]);assert.notEqual(f.status,'flying');assert.ok(Number.isFinite(f.altitude));assert.ok(f.fuel>=0);}});
+test('finished flights cannot change when stepped again',()=>{const f=simulate(DEFAULT);const snapshot=JSON.stringify(f);stepFlight(f,1);assert.equal(JSON.stringify(f),snapshot);});
