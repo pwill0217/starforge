@@ -4,3 +4,10 @@ node_modules/
 .env*
 !.env.example
 *.tar.gz
+
+# Private drafting material stays out of the public project.
+/TWITTER_POST.md
+/PROMPT.md
+/PROMPTS.md
+/CHAT_TRANSCRIPT.md
+/private/

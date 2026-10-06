@@ -6,7 +6,7 @@ Choose a retro-futuristic, cyberpunk, or steampunk look, assemble six kinds of h
 
 ## Play now
 
-[Launch the Starforge workshop](https://starforge-rocket-workshop.pwill0217.chatgpt.site) — free to play in your browser, no sign-in required.
+[Launch the Starforge workshop](https://starforge.pwill0217.chatgpt.site) — free to play in your browser, no sign-in required.
 
 ## Play locally
 
@@ -53,7 +53,7 @@ Three.js 0.180.0 is the only npm dependency and is pinned in `package-lock.json`
 
 Upload `dist/` to a static host. `_headers` supplies security headers on hosts that support that convention. Other hosts should configure equivalent headers as described in [SECURITY.md](SECURITY.md). A meta Content Security Policy provides a baseline on every host.
 
-The `.openai/hosting.json` manifest identifies the public Sites deployment; it contains no credential. The live game is available at [starforge-rocket-workshop.pwill0217.chatgpt.site](https://starforge-rocket-workshop.pwill0217.chatgpt.site).
+The `.openai/hosting.json` manifest identifies the public Sites deployment; it contains no credential. The live game is available at [starforge.pwill0217.chatgpt.site](https://starforge.pwill0217.chatgpt.site).
 
 ## Security and limitations
 
